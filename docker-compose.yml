@@ -1,0 +1,25 @@
+services:
+  traefik:
+    image: traefik:latest
+    command:
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  landing:
+    image: joseluisq/static-web-server:2
+    environment:
+      - SERVER_ROOT=/public
+    volumes:
+      - ./landing:/public:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.landing.rule=PathPrefix(`/`)
+      - traefik.http.routers.landing.entrypoints=web
+      - traefik.http.services.landing.loadbalancer.server.port=80
