@@ -1,0 +1,46 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-newspaper"></i> Новости</h1>
+    <% if user_signed_in? && current_user.admin? %>
+      <%= link_to new_article_path, class: "btn btn-success" do %>
+        <i class="bi bi-plus-lg"></i> Написать статью
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if @articles.any? %>
+    <% @articles.each do |article| %>
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h3><%= link_to article.title, article, class: "text-decoration-none" %></h3>
+              <p class="text-muted small mb-2">
+                <i class="bi bi-person"></i> <%= article.user.username %>
+                &bull; <i class="bi bi-calendar"></i> <%= article.published_at&.strftime("%d.%m.%Y %H:%M") %>
+                <% if article.game %>
+                  &bull; <i class="bi bi-controller"></i> <%= link_to article.game.title, article.game %>
+                <% end %>
+              </p>
+            </div>
+          </div>
+          <p class="card-text"><%= truncate(article.body, length: 300) %></p>
+          <div class="d-flex align-items-center gap-3">
+            <span class="text-muted"><i class="bi bi-heart-fill text-danger"></i> <%= article.likes.count %></span>
+            <span class="text-muted"><i class="bi bi-chat"></i> <%= article.comments.count %></span>
+            <%= link_to "Читать далее →", article, class: "ms-auto btn btn-outline-primary btn-sm" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="d-flex justify-content-center">
+      <%= paginate @articles %>
+    </div>
+  <% else %>
+    <div class="text-center py-5">
+      <i class="bi bi-newspaper text-muted" style="font-size: 4rem;"></i>
+      <p class="text-muted mt-3">Пока нет новостей</p>
+    </div>
+  <% end %>
+</div>
