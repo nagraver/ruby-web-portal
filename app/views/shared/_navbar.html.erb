@@ -1,0 +1,50 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+  <div class="container">
+    <%= link_to "Portals", root_path, class: "navbar-brand fw-bold" %>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <%= link_to "Игры", games_path, class: "nav-link #{'active' if controller_name == 'games'}" %>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Новости", articles_path, class: "nav-link #{'active' if controller_name == 'articles'}" %>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav">
+        <% if user_signed_in? %>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> <%= current_user.username %>
+              <% if current_user.admin? %>
+                <span class="badge bg-warning text-dark">Admin</span>
+              <% end %>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><%= link_to "Мой профиль", profile_path(current_user.username), class: "dropdown-item" %></li>
+              <% if current_user.admin? %>
+                <li><%= link_to "Админ-панель", admin_dashboard_path, class: "dropdown-item" %></li>
+                <li><hr class="dropdown-divider"></li>
+              <% end %>
+              <li><%= link_to "Настройки", edit_user_registration_path, class: "dropdown-item" %></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><%= button_to "Выйти", destroy_user_session_path, method: :delete, class: "dropdown-item" %></li>
+            </ul>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to "Войти", new_user_session_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Регистрация", new_user_registration_path, class: "btn btn-outline-success btn-sm ms-2 mt-1" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>

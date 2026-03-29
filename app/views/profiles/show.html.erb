@@ -1,0 +1,83 @@
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-4 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+            <i class="bi bi-person-fill text-white" style="font-size: 2.5rem;"></i>
+          </div>
+          <h3><%= @user.username %></h3>
+          <% if @user.admin? %>
+            <span class="badge bg-warning text-dark">Администратор</span>
+          <% end %>
+          <p class="text-muted mt-2">
+            <i class="bi bi-calendar"></i> На портале с <%= @user.created_at.strftime("%d.%m.%Y") %>
+          </p>
+          <div class="d-flex justify-content-center gap-4">
+            <div class="text-center">
+              <strong><%= @user.reviews.count %></strong>
+              <br><small class="text-muted">Отзывов</small>
+            </div>
+            <div class="text-center">
+              <strong><%= @user.comments.count %></strong>
+              <br><small class="text-muted">Комментариев</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <% if @user.admin? && @articles&.any? %>
+        <div class="card shadow-sm mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-newspaper"></i> Статьи</h5>
+          </div>
+          <div class="list-group list-group-flush">
+            <% @articles.each do |article| %>
+              <div class="list-group-item">
+                <%= link_to article.title, article, class: "text-decoration-none fw-bold" %>
+                <small class="text-muted d-block"><%= article.published_at&.strftime("%d.%m.%Y") %></small>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @reviews.any? %>
+        <div class="card shadow-sm mb-4">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-star"></i> Последние отзывы</h5>
+          </div>
+          <div class="list-group list-group-flush">
+            <% @reviews.each do |review| %>
+              <div class="list-group-item">
+                <div class="d-flex justify-content-between">
+                  <%= link_to review.game.title, review.game, class: "text-decoration-none fw-bold" %>
+                  <span class="text-warning"><i class="bi bi-star-fill"></i> <%= review.rating %>/10</span>
+                </div>
+                <p class="mb-0 text-muted small"><%= truncate(review.body, length: 150) %></p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+      <% if @comments.any? %>
+        <div class="card shadow-sm">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-chat-dots"></i> Последние комментарии</h5>
+          </div>
+          <div class="list-group list-group-flush">
+            <% @comments.each do |comment| %>
+              <div class="list-group-item">
+                <p class="mb-1"><%= truncate(comment.body, length: 200) %></p>
+                <small class="text-muted"><%= time_ago_in_words(comment.created_at) %> назад</small>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
