@@ -1,0 +1,83 @@
+<div class="container py-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><%= link_to "Новости", articles_path %></li>
+      <li class="breadcrumb-item active"><%= @article.title %></li>
+    </ol>
+  </nav>
+
+  <article>
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <h1><%= @article.title %></h1>
+      <% if user_signed_in? && (current_user.admin? || current_user == @article.user) %>
+        <div class="btn-group">
+          <%= link_to edit_article_path(@article), class: "btn btn-outline-primary btn-sm" do %>
+            <i class="bi bi-pencil"></i>
+          <% end %>
+          <%= button_to article_path(@article), method: :delete,
+                class: "btn btn-outline-danger btn-sm",
+                data: { turbo_confirm: "Удалить статью?" } do %>
+            <i class="bi bi-trash"></i>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="text-muted mb-4">
+      <i class="bi bi-person"></i> <%= link_to @article.user.username, profile_path(@article.user.username) %>
+      &bull; <i class="bi bi-calendar"></i> <%= @article.published_at&.strftime("%d %B %Y, %H:%M") %>
+      <% if @article.game %>
+        &bull; <i class="bi bi-controller"></i> <%= link_to @article.game.title, @article.game %>
+      <% end %>
+    </div>
+
+    <div class="mb-4">
+      <%= simple_format(@article.body) %>
+    </div>
+
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <% if user_signed_in? %>
+        <% if @article.liked_by?(current_user) %>
+          <%= button_to article_like_path(@article), method: :delete, class: "btn btn-danger btn-sm" do %>
+            <i class="bi bi-heart-fill"></i> <%= @article.likes.count %>
+          <% end %>
+        <% else %>
+          <%= button_to article_like_path(@article), method: :post, class: "btn btn-outline-danger btn-sm" do %>
+            <i class="bi bi-heart"></i> <%= @article.likes.count %>
+          <% end %>
+        <% end %>
+      <% else %>
+        <span class="btn btn-outline-danger btn-sm disabled">
+          <i class="bi bi-heart"></i> <%= @article.likes.count %>
+        </span>
+      <% end %>
+    </div>
+  </article>
+
+  <hr>
+
+  <section>
+    <h4><i class="bi bi-chat-dots"></i> Комментарии (<%= @article.comments.count %>)</h4>
+
+    <% if user_signed_in? %>
+      <div class="card mb-4">
+        <div class="card-body">
+          <%= form_with(model: [@article, @comment], url: article_comments_path(@article)) do |f| %>
+            <div class="mb-3">
+              <%= f.text_area :body, class: "form-control", rows: 3, placeholder: "Напишите комментарий...", required: true %>
+            </div>
+            <%= f.submit "Отправить", class: "btn btn-primary btn-sm" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% @comments.each do |comment| %>
+      <%= render "comments/comment", comment: comment, commentable: @article %>
+    <% end %>
+
+    <div class="d-flex justify-content-center mt-3">
+      <%= paginate @comments %>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,21 @@
+<%= form_with(model: genre) do |f| %>
+  <% if genre.errors.any? %>
+    <div class="alert alert-danger">
+      <ul class="mb-0">
+        <% genre.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :name, "Название", class: "form-label" %>
+    <%= f.text_field :name, class: "form-control", required: true %>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= f.submit class: "btn btn-success" %>
+    <%= link_to "Отмена", genres_path, class: "btn btn-outline-secondary" %>
+  </div>
+<% end %>

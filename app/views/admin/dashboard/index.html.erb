@@ -1,0 +1,101 @@
+<div class="container py-4">
+  <h1><i class="bi bi-speedometer2"></i> Админ-панель</h1>
+
+  <div class="row g-4 mb-4 mt-2">
+    <div class="col-md-3 col-6">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h2 class="text-primary"><%= @users_count %></h2>
+          <p class="text-muted mb-0">Пользователи</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h2 class="text-success"><%= @games_count %></h2>
+          <p class="text-muted mb-0">Игры</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h2 class="text-info"><%= @articles_count %></h2>
+          <p class="text-muted mb-0">Статьи</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6">
+      <div class="card text-center shadow-sm">
+        <div class="card-body">
+          <h2 class="text-warning"><%= @reviews_count %></h2>
+          <p class="text-muted mb-0">Отзывы</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Быстрые действия</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex flex-wrap gap-2">
+            <%= link_to new_game_path, class: "btn btn-outline-primary" do %>
+              <i class="bi bi-controller"></i> Добавить игру
+            <% end %>
+            <%= link_to new_article_path, class: "btn btn-outline-primary" do %>
+              <i class="bi bi-newspaper"></i> Написать статью
+            <% end %>
+            <%= link_to genres_path, class: "btn btn-outline-primary" do %>
+              <i class="bi bi-tags"></i> Управление жанрами
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-0">Новые пользователи</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+          <% @recent_users.each do |u| %>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <strong><%= u.username %></strong>
+                <small class="text-muted ms-2"><%= u.email %></small>
+              </div>
+              <span class="badge bg-<%= u.admin? ? 'warning' : 'secondary' %>"><%= u.role %></span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-0">Последние отзывы</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+          <% @recent_reviews.each do |review| %>
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between">
+                <strong><%= link_to review.game.title, review.game, class: "text-decoration-none" %></strong>
+                <span class="text-warning"><i class="bi bi-star-fill"></i> <%= review.rating %>/10</span>
+              </div>
+              <small class="text-muted">от <%= review.user.username %></small>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+<%= form_with(model: game, class: "needs-validation") do |f| %>
+  <% if game.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(game.errors.count, "ошибка", "ошибки", "ошибок") %></h4>
+      <ul class="mb-0">
+        <% game.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :title, "Название", class: "form-label" %>
+    <%= f.text_field :title, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :description, "Описание", class: "form-label" %>
+    <%= f.text_area :description, class: "form-control", rows: 5 %>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <%= f.label :developer, "Разработчик", class: "form-label" %>
+      <%= f.text_field :developer, class: "form-control" %>
+    </div>
+    <div class="col-md-6 mb-3">
+      <%= f.label :publisher, "Издатель", class: "form-label" %>
+      <%= f.text_field :publisher, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <%= f.label :release_date, "Дата выхода", class: "form-label" %>
+      <%= f.date_field :release_date, class: "form-control" %>
+    </div>
+    <div class="col-md-6 mb-3">
+      <%= f.label :cover_image, "URL обложки", class: "form-label" %>
+      <%= f.text_field :cover_image, class: "form-control", placeholder: "https://..." %>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :genre_ids, "Жанры", class: "form-label" %>
+    <%= f.collection_check_boxes :genre_ids, @genres, :id, :name do |b| %>
+      <div class="form-check form-check-inline">
+        <%= b.check_box(class: "form-check-input") %>
+        <%= b.label(class: "form-check-label") %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= f.submit class: "btn btn-success" %>
+    <%= link_to "Отмена", games_path, class: "btn btn-outline-secondary" %>
+  </div>
+<% end %>
