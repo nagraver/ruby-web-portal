@@ -22,13 +22,32 @@ services:
       DATABASE_PASSWORD: postgres
       RAILS_ENV: production
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      FORCE_SSL: "true"
+      ASSUME_SSL: "true"
       RAILS_SERVE_STATIC_FILES: "true"
       RAILS_LOG_TO_STDOUT: "true"
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - "3000:3000"
+    networks:
+      - default
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.portal-http.rule=Host(`ruby-web-portal.aethos.site`)
+      - traefik.http.routers.portal-http.entrypoints=web
+      - traefik.http.routers.portal-http.middlewares=portal-https-redirect
+      - traefik.http.middlewares.portal-https-redirect.redirectscheme.scheme=https
+      - traefik.http.routers.portal-https.rule=Host(`ruby-web-portal.aethos.site`)
+      - traefik.http.routers.portal-https.entrypoints=websecure
+      - traefik.http.routers.portal-https.tls=true
+      - traefik.http.routers.portal-https.tls.certresolver=le
+      - traefik.http.services.portal.loadbalancer.server.port=3000
 
 volumes:
   postgres_data:
+
+networks:
+  proxy:
+    external: true
